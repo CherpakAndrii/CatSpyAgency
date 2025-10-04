@@ -11,7 +11,7 @@ class SpyCat(Base):
     __tablename__ = "cats"
 
     cat_id = Column(Integer, primary_key=True)
-    name = Column(String(20), nullable=False, unique=True)
+    name = Column(String(20), nullable=False)
     years_of_experience = Column(Double, nullable=False)
     breed = Column(String(20), nullable=False)
     salary = Column(Double, nullable=False)
@@ -22,7 +22,7 @@ class SpyCat(Base):
         return {
             'cat_id': self.cat_id,
             'name': self.name,
-            'experience': self.years_of_experience,
+            'years_of_experience': self.years_of_experience,
             'breed': self.breed,
             'salary': self.salary
         }
@@ -44,7 +44,7 @@ class MissionTarget(Base):
     target_id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False)
     country = Column(String(30), nullable=False)
-    is_complete = Column(Integer, nullable=False, default=0)
+    is_completed = Column(Integer, nullable=False, default=0)
 
     mission_id = Column(Integer, ForeignKey('missions.mission_id', ondelete='CASCADE'))
 
@@ -54,9 +54,10 @@ class MissionTarget(Base):
     def to_extended_dict(self):
         return {
             'target_id': self.target_id,
+            'mission_id': self.mission_id,
             'name': self.name,
             'country': self.country,
-            'is_complete': self.is_complete,
+            'is_completed': self.is_completed,
             'notes': [note.to_dict() for note in self.notes]
         }
 
@@ -74,6 +75,7 @@ class TargetNote(Base):
     def to_dict(self):
         return {
             'note_id': self.note_id,
+            'target_id': self.target_id,
             'text': self.text
         }
 
@@ -82,8 +84,8 @@ class Mission(Base):
     __tablename__ = "missions"
 
     mission_id = Column(Integer, primary_key=True)
-    cat_id = Column(Integer, ForeignKey('cats.cat_id', ondelete='CASCADE'), nullable=True)
-    is_complete = Column(Integer, nullable=False, default=0)
+    cat_id = Column(Integer, ForeignKey('cats.cat_id', ondelete='CASCADE'), nullable=True, default=0)
+    is_completed = Column(Integer, nullable=False, default=0)
 
     spy_cat = relationship('SpyCat', back_populates='missions')
     targets = relationship('MissionTarget', back_populates='mission')
@@ -92,14 +94,14 @@ class Mission(Base):
         return {
             'mission_id': self.mission_id,
             'cat_id': self.cat_id,
-            'is_complete': self.is_complete
+            'is_completed': self.is_completed
         }
 
     def to_extended_dict(self):
         return {
             'mission_id': self.mission_id,
             'cat_id': self.cat_id,
-            'is_complete': self.is_complete,
+            'is_completed': self.is_completed,
             'spy_cat': self.spy_cat.to_dict() if self.spy_cat else None,
             'targets': [target.to_extended_dict() for target in self.targets]
         }

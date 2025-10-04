@@ -1,7 +1,7 @@
 from typing import Optional, List
 
 from api.resp_orm_models import __BaseModelWithConfig
-from api.resp_orm_models import SpyCat
+from api.resp_orm_models import SpyCat, MissionCompact, MissionExtended, MissionTarget
 
 
 class MessageResponse(__BaseModelWithConfig):
@@ -14,3 +14,7 @@ class SuccessResponse(__BaseModelWithConfig):
 
 class GetSpyCatsResp(__BaseModelWithConfig):
     cats: List[SpyCat]
+
+
+class GetMissionsResp(__BaseModelWithConfig):
+    missions: List[MissionCompact]

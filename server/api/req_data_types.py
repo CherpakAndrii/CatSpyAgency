@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 
 class __BaseModelWithConfig(BaseModel):
@@ -13,3 +15,16 @@ class CreateSpyCatData(__BaseModelWithConfig):
 
 class UpdateCatSalaryData(__BaseModelWithConfig):
     salary: float
+
+class CreateTargetData(__BaseModelWithConfig):
+    name: str
+    country: str
+
+class CreateMissionData(__BaseModelWithConfig):
+    targets: List[CreateTargetData]
+
+class AssignSpyCatData(__BaseModelWithConfig):
+    cat_id: int
+
+class CreateNoteData(__BaseModelWithConfig):
+    text: str

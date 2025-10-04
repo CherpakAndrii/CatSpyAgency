@@ -9,6 +9,8 @@ import uvloop
 import asyncio
 
 from api.spy_cats_router import spy_cats_router
+from api.missions_router import missions_router
+from api.targets_router import targets_router
 from constants import SERVER_PORT, SERVER_WORKERS
 from utils.launch_utils import configure_logging, configure_directories
 
@@ -50,6 +52,8 @@ app.add_middleware(
 app.add_middleware(GZipMiddleware, minimum_size=4096)
 
 app.include_router(spy_cats_router, prefix="/api/cats", tags=["SpyCats"])
+app.include_router(missions_router, prefix="/api/missions", tags=["Missions"])
+app.include_router(targets_router, prefix="/api/targets", tags=["Targets"])
 
 
 if __name__ == '__main__':

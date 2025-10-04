@@ -10,21 +10,19 @@ spy_cats_router = APIRouter()
 
 @spy_cats_router.get('/', response_model=GetSpyCatsResp)
 def get_cats():
-    session = Session()
-    cats = session.query(SpyCat).all()
-    session.close()
-    cats_list = [cat.to_dict() for cat in cats]
-    return {'cats': cats_list}
+    with Session() as session:
+        cats = session.query(SpyCat).all()
+        cats_list = [cat.to_dict() for cat in cats]
+        return {'cats': cats_list}
 
 
 @spy_cats_router.get('/{cat_id}', response_model=SpyCatResp)
 def get_cat(cat_id: int):
-    session = Session()
-    cat = session.query(SpyCat).get(cat_id)
-    session.close()
-    if cat is None:
-        raise HTTPException(status_code=404, detail="Cat not found")
-    return cat.to_extended_dict()
+    with Session() as session:
+        cat = session.query(SpyCat).get(cat_id)
+        if cat is None:
+            raise HTTPException(status_code=404, detail="Cat not found")
+        return cat.to_extended_dict()
 
 
 @spy_cats_router.post('/', response_model=GetSpyCatsResp)
@@ -44,8 +42,8 @@ def create_spy_cat(data: CreateSpyCatData):
     session.add(new_cat)
     session.commit()
     cats = session.query(SpyCat).all()
-    session.close()
     cat_list = [cat.to_dict() for cat in cats]
+    session.close()
     return {'cats': cat_list}
 
 
@@ -64,8 +62,8 @@ def update_cat_salary(data: UpdateCatSalaryData, cat_id: int):
     cat.salary = data.salary
     session.commit()
     cats = session.query(SpyCat).all()
-    session.close()
     cat_list = [cat.to_dict() for cat in cats]
+    session.close()
     return {'cats': cat_list}
 
 
@@ -81,6 +79,6 @@ def delete_spy_cat(cat_id: int):
     session.delete(cat)
     session.commit()
     cats = session.query(SpyCat).all()
-    session.close()
     cats_list = [cat.to_dict() for cat in cats]
+    session.close()
     return {'cats': cats_list}
