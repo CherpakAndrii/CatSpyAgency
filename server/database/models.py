@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, Double, String, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 
 from database.sqlite_connector import engine, Session
@@ -12,9 +12,9 @@ class SpyCat(Base):
 
     cat_id = Column(Integer, primary_key=True)
     name = Column(String(20), nullable=False, unique=True)
-    experience = Column(Integer, nullable=False)
+    years_of_experience = Column(Double, nullable=False)
     breed = Column(String(20), nullable=False)
-    salary = Column(Integer, nullable=False)
+    salary = Column(Double, nullable=False)
 
     missions = relationship('Mission', back_populates='spy_cat')
 
@@ -22,7 +22,7 @@ class SpyCat(Base):
         return {
             'cat_id': self.cat_id,
             'name': self.name,
-            'experience': self.experience,
+            'experience': self.years_of_experience,
             'breed': self.breed,
             'salary': self.salary
         }
@@ -31,7 +31,7 @@ class SpyCat(Base):
         return {
             'cat_id': self.cat_id,
             'name': self.name,
-            'experience': self.experience,
+            'years_of_experience': self.years_of_experience,
             'breed': self.breed,
             'salary': self.salary,
             'missions': [mission.to_dict() for mission in self.missions]
