@@ -1,6 +1,7 @@
 ﻿import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from contextlib import asynccontextmanager
@@ -55,6 +56,12 @@ app.include_router(spy_cats_router, prefix="/api/cats", tags=["SpyCats"])
 app.include_router(missions_router, prefix="/api/missions", tags=["Missions"])
 app.include_router(targets_router, prefix="/api/targets", tags=["Targets"])
 
+@app.get("/spy-cats")
+def redirect_to_html():
+    return RedirectResponse("/spy-cats.html")
+
+app.mount("/", StaticFiles(directory="../client/out", html=True), name="static")
+
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=SERVER_PORT, workers=SERVER_WORKERS)
+    uvicorn.run(app, host='0.0.0.0', port=SERVER_PORT)

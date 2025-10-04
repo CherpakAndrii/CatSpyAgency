@@ -22,10 +22,11 @@ export default function SpyCatsPage() {
 
   const handleAddCat = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      await addCat(form);
+      const updatedCats = await addCat(form);
+      setCats(updatedCats);
       setForm({ name: "", years_of_experience: "", breed: "", salary: "" });
-      loadCats();
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to add cat");
     }
@@ -37,7 +38,8 @@ export default function SpyCatsPage() {
 
     try {
       await updateCatSalary(id, salary);
-      loadCats();
+      setCats(updatedCats);
+      setError("");
     } catch {
       setError("Failed to update salary");
     }
@@ -125,29 +127,38 @@ export default function SpyCatsPage() {
       <h2 className="text-lg font-semibold mb-2">Existing Spy Cats</h2>
       <div className="space-y-3">
         {cats.map((cat) => (
-            <div key={cat.cat_id} className="flex justify-between items-center border p-3 rounded bg-white shadow-sm">
-              <div>
-                <p className="font-semibold">{cat.name}</p>
-                <p className="text-sm text-gray-600">
-                  {cat.breed ?? "Unknown"} • {cat.years_of_experience ?? 0} yrs exp
-                </p>
-                <p className="text-sm">💰 Salary: {cat.salary ?? 0}</p>
+          <div key={cat.cat_id} className="flex justify-between items-center border p-3 rounded bg-white shadow-sm">
+            <div>
+              <p className="font-semibold">{cat.name}</p>
+              <p className="text-sm text-gray-600">
+                {cat.breed ?? "Unknown"} • {cat.years_of_experience ?? 0} yrs exp
+              </p>
+              <p className="text-sm">💰 Salary: {cat.salary ?? 0}</p>
+            </div>
 
-              </div>
-              <div className="flex gap-2">
-                <input
-                    type="number"
-                  placeholder="Salary"
-                  step="0.01"
-                  defaultValue={Number(cat.salary) || 0}
-                  onBlur={(e) => {
-                    const value = parseFloat(e.target.value);
-                    if (!isNaN(value) && value >= 0) {
-                      handleUpdateSalary(cat.cat_id, value);
-                    }
-                  }}
+            <div className="flex gap-2">
+              <input
+                type="number"
+                step="0.01"
+                defaultValue={Number(cat.salary) || 0}
+                placeholder="Salary"
                 className="border p-1 rounded w-24"
+                id={`salary-${cat.cat_id}`} // унікальний id, щоб можна було знайти input
               />
+
+              <button
+                onClick={() => {
+                  const input = document.getElementById(`salary-${cat.cat_id}`);
+                  const value = parseFloat(input.value);
+                  if (!isNaN(value) && value >= 0) {
+                    handleUpdateSalary(cat.cat_id, value);
+                  }
+                }}
+                className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+              >
+                Update
+              </button>
+
               <button
                 onClick={() => handleDelete(cat.cat_id)}
                 className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"

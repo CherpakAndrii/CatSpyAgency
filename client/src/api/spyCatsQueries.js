@@ -1,44 +1,22 @@
 ﻿import axios from "axios";
 import API from "@/api/config";
 
-const mediumOperationsTimeout = 5000;
-
-export function getCats() {
-  return axios
-    .get(API.SPY_CATS, { timeout: mediumOperationsTimeout })
-    .then(({ data }) => data.cats)
-    .catch((reason) => {
-      console.error("Failed to get cats:", reason);
-      return [];
-    });
+export async function getCats() {
+  const { data } = await axios.get(API.SPY_CATS);
+  return data.cats;
 }
 
-export function addCat(catData) {
-  return axios
-    .post(API.SPY_CATS, catData, { timeout: mediumOperationsTimeout })
-    .then(({ data }) => data.cats)
-    .catch((reason) => {
-      console.error("Failed to add cat:", reason);
-      return [];
-    });
+export async function addCat(catData) {
+  const { data } = await axios.post(API.SPY_CATS, catData);
+  return data.cats;
 }
 
-export function updateCatSalary(id, salary) {
-  return axios
-    .put(API.SPY_CAT(id), { salary }, { timeout: mediumOperationsTimeout })
-    .then(({ data }) => data.cats)
-    .catch((reason) => {
-      console.error("Failed to update salary:", reason);
-      return [];
-    });
+export async function updateCatSalary(id, salary) {
+  const { data } = await axios.put(API.SPY_CAT(id), { salary });
+  return data.cats;
 }
 
-export function deleteCat(id) {
-  return axios
-    .delete(API.SPY_CAT(id), { timeout: mediumOperationsTimeout })
-    .then(({ data }) => data.cats)
-    .catch((reason) => {
-      console.error("Failed to delete cat:", reason);
-      return [];
-    });
+export async function deleteCat(id) {
+  const { data } = await axios.delete(API.SPY_CAT(id));
+  return data.cats;
 }
